@@ -2,6 +2,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+int alternativeColorLocation;
+
 /*
 TRIANGULO
 
@@ -12,18 +14,20 @@ float vertices[] = {
 };
 */
 
-/*RECTANGULO
+/*RECTANGULO CON INDICES
 float vertices[] = {
     -0.5f, -0.5f, 0.0f,
      0.5f, -0.5f, 0.0f,
     -0.5f,  0.5f, 0.0f,
-     0.5f, -0.5f, 0.0f,
      0.5f,  0.5f, 0.0f,
-    -0.5f,  0.5f, 0.0f,
 };
-*/
 
-/*ESTRELLA*/
+unsigned int indices[] = {
+    0,1,2,
+    1,3,2
+};*/
+
+/*ESTRELLA
 
 float vertices[] = {
     -0.5f, -0.5f, 0.0f,
@@ -32,8 +36,23 @@ float vertices[] = {
      0.5f, 0.5f, 0.0f,
      -0.5f, 0.5f, 0.0f,
      0.0f,  -1.0f, 0.0f,
+};*/
+
+/*CUADRADO CUATRICOLOR CON INDICES */
+float vertices[] = {
+     0.0f,  0.0f, 0.0f,
+     0.5f,  0.0f, 0.0f,
+     0.0f,  0.5f, 0.0f,
+    -0.5f,  0.0f, 0.0f,
+     0.0f, -0.5f, 0.0f
 };
 
+unsigned int indices[] = {
+    0,1,2,
+    0,2,3,
+    0,3,4,
+    0,4,1
+};
 
 const char* vertexShaderSource = "#version 330 core\n"
 "layout (location = 0) in vec3 aPos;\n"
@@ -44,9 +63,10 @@ const char* vertexShaderSource = "#version 330 core\n"
 
 const char* fragmentShaderSource = "#version 330 core\n"
 "out vec4 FragColor;\n"
+"uniform vec4 alternativeColor;\n"
 "void main()\n"
 "{\n"
-"   FragColor = vec4(0.1f, 0.5f, 0.2f, 1.0f);\n"
+"   FragColor = alternativeColor;\n"
 "}\n\0";
 
 void frameBuffer_size_callback(GLFWwindow* Window, int width, int height) {
@@ -93,17 +113,27 @@ int main(void)
     glAttachShader(shaderProgram, fragmentShader);
     glLinkProgram(shaderProgram);
 
+    alternativeColorLocation = glGetUniformLocation(shaderProgram, "alternativeColor");
+
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 
     unsigned int VBO;
     unsigned int VAO;
+    unsigned int IBO;
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
+    glGenBuffers(1, &IBO);
+
     glBindVertexArray(VAO);
+
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
 
     //solo para el Triangulo, cambia parametros para otra forma
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
@@ -112,7 +142,7 @@ int main(void)
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     //Wireframe activado
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     while (!glfwWindowShouldClose(Window)) {
 
@@ -120,7 +150,28 @@ int main(void)
 
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 6);// 3 para un triangulo, 6 para una figura hecha con dos triangulos
+
+        //glDrawArrays(GL_TRIANGLES, 0, 6);// 3 para un triangulo, 6 para una figura hecha con dos triangulos
+         
+        /* RECTANGULO SIN REPETIR INDICES
+        glUniform4f(alternativeColorLocation, 1.0f, 0.f, 0.f, 1.f);
+        glDrawElements(GL_TRIANGLES, std::size(indices) / 2, GL_UNSIGNED_INT, 0); //Dibujamos rectangulo sin repetir indices
+
+        glUniform4f(alternativeColorLocation, 0.0f, 1.f, 0.f, 1.f);
+        glDrawElements(GL_TRIANGLES, std::size(indices) / 2, GL_UNSIGNED_INT, (int*)NULL + 3); //Dibujamos rectangulo sin repetir indices
+        */
+
+        glUniform4f(alternativeColorLocation, 1.f, 1.f, 0.f, 1.f);
+        glDrawElements(GL_TRIANGLES, std::size(indices)/2, GL_UNSIGNED_INT, 0); //Dibujamos rectangulo sin repetir indices
+        
+        glUniform4f(alternativeColorLocation, 0.0f, 1.f, 0.f, 1.f);
+        glDrawElements(GL_TRIANGLES, std::size(indices)/2, GL_UNSIGNED_INT, (int*)NULL + 3); //Dibujamos rectangulo sin repetir indices
+
+        glUniform4f(alternativeColorLocation, 0.0f, 0.f, 1.f, 1.f); 
+        glDrawElements(GL_TRIANGLES, std::size(indices)/2, GL_UNSIGNED_INT, (int*)NULL + 6); //Dibujamos rectangulo sin repetir indices
+
+        glUniform4f(alternativeColorLocation, 1.0f, 0.f, 0.f, 1.f);
+        glDrawElements(GL_TRIANGLES, std::size(indices)/2, GL_UNSIGNED_INT, (int*)NULL + 9); //Dibujamos rectangulo sin repetir indices
 
         glfwSwapBuffers(Window);
         glfwPollEvents();
@@ -128,8 +179,8 @@ int main(void)
 
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &IBO);
     glDeleteProgram(shaderProgram);
-    //glViewport(0, 0, 800, 600);
 
     glfwTerminate();
     return 0;
