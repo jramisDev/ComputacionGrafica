@@ -144,6 +144,9 @@ int main(void)
     //Wireframe activado
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+    double previousTime = glfwGetTime();
+    int frameCount = 0;
+
     while (!glfwWindowShouldClose(Window)) {
 
         glClear(GL_COLOR_BUFFER_BIT);
@@ -160,6 +163,19 @@ int main(void)
         glUniform4f(alternativeColorLocation, 0.0f, 1.f, 0.f, 1.f);
         glDrawElements(GL_TRIANGLES, std::size(indices) / 2, GL_UNSIGNED_INT, (int*)NULL + 3); //Dibujamos rectangulo sin repetir indices
         */
+
+        frameCount++;
+
+        double currentTime = glfwGetTime();
+        double elapsedTime = currentTime - previousTime;
+
+        if (elapsedTime >= 1.0) {
+            double fps = frameCount / elapsedTime;
+
+            // Reiniciar contadores
+            frameCount = 0;
+            previousTime = currentTime;
+        }
 
         glUniform4f(alternativeColorLocation, 1.f, 1.f, 0.f, 1.f);
         glDrawElements(GL_TRIANGLES, std::size(indices)/2, GL_UNSIGNED_INT, 0); //Dibujamos rectangulo sin repetir indices
