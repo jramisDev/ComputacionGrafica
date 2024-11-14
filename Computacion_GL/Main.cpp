@@ -21,18 +21,17 @@ const char* fragmentShaderSource = "#version 330 core\n"
 "}\n\0";
 
 float vertices[] = {
-     0.0f,  0.0f, 0.0f,
-     0.5f,  0.0f, 0.0f,
-     0.0f,  0.5f, 0.0f,
-    -0.5f,  0.0f, 0.0f,
-     0.0f, -0.5f, 0.0f
+     0.00f,  0.00f, 0.00f, //0
+     0.15f,  0.50f, 0.00f, //1
+    -0.15f,  0.50f, 0.00f, //2
+    -0.35f,  0.30f, 0.00f, //3
+    -0.15f, -0.05f, 0.00f, //4
 };
 
 unsigned int indices[] = {
     0,1,2,
     0,2,3,
-    0,3,4,
-    0,4,1
+    0,3,4
 };
 
 void frameBuffer_size_callback(GLFWwindow* Window, int width, int height) {
@@ -92,7 +91,7 @@ int main(void)
     glEnableVertexAttribArray(0);
 
     //Wireframe activado
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     while (!glfwWindowShouldClose(Window)) {
         glClear(GL_COLOR_BUFFER_BIT);
@@ -100,17 +99,29 @@ int main(void)
         shaderProgram.use();
         glBindVertexArray(VAO);
 
-        glUniform4f(alternativeColorLocation, 1.f, 1.f, 0.f, 1.f);
-        glDrawElements(GL_TRIANGLES, std::size(indices) / 2, GL_UNSIGNED_INT, 0);
+        glUniform4f(alternativeColorLocation, 1.f, 0.f, 0.f, 1.f);
+        glDrawElements(GL_TRIANGLES, std::size(indices) / 3, GL_UNSIGNED_INT, 0);
 
         glUniform4f(alternativeColorLocation, 0.0f, 1.f, 0.f, 1.f);
-        glDrawElements(GL_TRIANGLES, std::size(indices) / 2, GL_UNSIGNED_INT, (void*)(3 * sizeof(unsigned int)));
+        glDrawElements(GL_TRIANGLES, std::size(indices) / 3, GL_UNSIGNED_INT, (int*)NULL + 3);
 
         glUniform4f(alternativeColorLocation, 0.0f, 0.f, 1.f, 1.f);
-        glDrawElements(GL_TRIANGLES, std::size(indices) / 2, GL_UNSIGNED_INT, (void*)(6 * sizeof(unsigned int)));
+        glDrawElements(GL_TRIANGLES, std::size(indices) / 3, GL_UNSIGNED_INT, (int*)NULL + 6);
+
+        /*
+        glUniform4f(alternativeColorLocation, 1.f, 1.f, 0.f, 1.f);
+        glDrawElements(GL_TRIANGLES, std::size(indices)/2, GL_UNSIGNED_INT, 0); //Dibujamos rectangulo sin repetir indices
+        
+        glUniform4f(alternativeColorLocation, 0.0f, 1.f, 0.f, 1.f);
+        glDrawElements(GL_TRIANGLES, std::size(indices)/2, GL_UNSIGNED_INT, (int*)NULL + 3); //Dibujamos rectangulo sin repetir indices
+
+        glUniform4f(alternativeColorLocation, 0.0f, 0.f, 1.f, 1.f); 
+        glDrawElements(GL_TRIANGLES, std::size(indices)/2, GL_UNSIGNED_INT, (int*)NULL + 6); //Dibujamos rectangulo sin repetir indices
 
         glUniform4f(alternativeColorLocation, 1.0f, 0.f, 0.f, 1.f);
-        glDrawElements(GL_TRIANGLES, std::size(indices) / 2, GL_UNSIGNED_INT, (void*)(9 * sizeof(unsigned int)));
+        glDrawElements(GL_TRIANGLES, std::size(indices)/2, GL_UNSIGNED_INT, (int*)NULL + 9); //Dibujamos rectangulo sin repetir indices
+        */
+
 
         glfwSwapBuffers(Window);
         glfwPollEvents();
