@@ -32,7 +32,8 @@ float vertices[] = {
     -0.25f, -0.30f, 0.00f, //7
     -0.25f, -0.05f, 0.00f, //8
     -0.09f, -0.18f, 0.00f, //9
-    -0.06f, -0.44f, 0.00f, //10
+    -0.04f, -0.45f, 0.00f, //10
+    -0.00f, -0.35f, 0.00f, //11
 };
 
 unsigned int indices[] = {
@@ -44,7 +45,9 @@ unsigned int indices[] = {
     6,7,8,
     8,9,4,
     7,9,8,
-    7,10,9
+    7,10,9,
+    10,11,4,
+    11,0,4
 };
 
 void frameBuffer_size_callback(GLFWwindow* Window, int width, int height) {
@@ -106,7 +109,7 @@ int main(void)
     //Wireframe activado
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    int divIndex = 9;
+    int divIndex = 11;
 
     float pielR = 1.000f;
     float pielG = 0.600f;
@@ -120,6 +123,10 @@ int main(void)
     float narizOjosG = 0.0f;
     float narizOjosB = 0.0f;
 
+    float morroR = 0.839f;
+    float morroG = 0.506f;
+    float morroB = 0.000;
+
 
     while (!glfwWindowShouldClose(Window)) {
         
@@ -129,7 +136,7 @@ int main(void)
         shaderProgram.use();
         glBindVertexArray(VAO);
 
-        glUniform4f(alternativeColorLocation, pielR, pielG, pielB, 1.0f);
+        glUniform4f(alternativeColorLocation, pielR, pielG, pielB, 0.9f);
         glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, 0);
 
         glUniform4f(alternativeColorLocation, pielR, pielG, pielB, 1.0f);
@@ -155,6 +162,15 @@ int main(void)
 
         glUniform4f(alternativeColorLocation, pielR, pielG, pielB, 1.0f);
         glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 24);
+
+        glUniform4f(alternativeColorLocation, 1.f, 10.f, 0.f, 1.0f);
+        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 27);
+
+        glUniform4f(alternativeColorLocation, 1.f, 0.f, 1.f, 1.0f);
+        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 30);
+
+        glUniform4f(alternativeColorLocation, 1.f, 1.f, 0.f, 1.0f);
+        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 33);
 
 
         glfwSwapBuffers(Window);
