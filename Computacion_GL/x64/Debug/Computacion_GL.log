@@ -1,5 +1,4 @@
 ﻿  Main.cpp
-C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Main.cpp(144,57): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
 C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Main.cpp(147,57): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
 C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Main.cpp(150,57): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
 C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Main.cpp(153,57): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
@@ -12,4 +11,7 @@ C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL
 C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Main.cpp(174,57): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
 C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Main.cpp(177,57): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
 C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Main.cpp(180,57): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Main.cpp(183,57): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Main.cpp(186,57): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Main.cpp(189,57): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
   Computacion_GL.vcxproj -> C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\x64\Debug\Computacion_GL.exe

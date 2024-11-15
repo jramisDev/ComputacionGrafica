@@ -36,6 +36,7 @@ float vertices[] = {
     -0.00f, -0.35f, 0.00f, //11
     -0.00f, -0.48f, 0.00f, //12
      0.04f, -0.45f, 0.00f, //13
+     0.12f, -0.03f, 0.00f, //14
 };
 
 unsigned int indices[] = {
@@ -51,7 +52,9 @@ unsigned int indices[] = {
     10,11,4,
     11,0,4,
     10,12,11,
-    12,13,11
+    12,13,11,
+    11,14,0,
+    11,13,14
 };
 
 void frameBuffer_size_callback(GLFWwindow* Window, int width, int height) {
@@ -113,7 +116,7 @@ int main(void)
     //Wireframe activado
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    int divIndex = 13;
+    int divIndex = 15;
 
     float pielR = 1.000f;
     float pielG = 0.600f;
@@ -178,6 +181,12 @@ int main(void)
 
         glUniform4f(alternativeColorLocation, narizOjosR, narizOjosG, narizOjosB, 1.0f);
         glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 36);
+
+        glUniform4f(alternativeColorLocation, morroR, morroG, morroB, 1.0f);
+        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 39);
+
+        glUniform4f(alternativeColorLocation, morroR, morroG, morroB, 1.0f);
+        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 42);
 
 
         glfwSwapBuffers(Window);
