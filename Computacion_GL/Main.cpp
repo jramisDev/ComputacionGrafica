@@ -20,41 +20,55 @@ const char* fragmentShaderSource = "#version 330 core\n"
 "   FragColor = alternativeColor;\n"
 "}\n\0";
 
-     //X      Y       Z
+
 float vertices[] = {
-     0.00f,  0.00f, 0.00f, //0
-     0.15f,  0.50f, 0.00f, //1
-    -0.15f,  0.50f, 0.00f, //2
-    -0.35f,  0.30f, 0.00f, //3
-    -0.12f, -0.03f, 0.00f, //4
-    -0.40f,  0.70f, 0.00f, //5
-    -0.50f, -0.10f, 0.00f, //6
-    -0.25f, -0.30f, 0.00f, //7
-    -0.25f, -0.05f, 0.00f, //8
-    -0.09f, -0.18f, 0.00f, //9
-    -0.04f, -0.45f, 0.00f, //10
-    -0.00f, -0.35f, 0.00f, //11
-    -0.00f, -0.48f, 0.00f, //12
-     0.04f, -0.45f, 0.00f, //13
-     0.12f, -0.03f, 0.00f, //14
+     0.000f,  0.000f, 0.000f, //0
+     0.150f,  0.400f, 0.000f, //1
+    -0.150f,  0.400f, 0.000f, //2
+    -0.500f,  0.280f, 0.000f, //3
+    -0.120f, -0.010f, 0.000f, //4
+    -0.600f,  0.700f, 0.000f, //5
+    -0.600f, -0.060f, 0.000f, //6
+    -0.240f, -0.310f, 0.000f, //7
+    -0.250f, -0.022f, 0.000f, //8
+    -0.090f, -0.150f, 0.000f, //9
+    -0.040f, -0.450f, 0.000f, //10
+    -0.000f, -0.380f, 0.000f, //11
+    -0.000f, -0.470f, 0.000f, //12
+     0.040f, -0.450f, 0.000f, //13
+     0.120f, -0.010f, 0.000f, //14
+     0.240f, -0.310f, 0.000f, //15
+     0.090f, -0.150f, 0.000f, //16
+     0.250f, -0.022f, 0.000f, //17
+     0.600f, -0.060f, 0.000f, //18
+     0.500f,  0.280f, 0.000f, //19
+     0.600f,  0.700f, 0.000f, //20
 };
 
 unsigned int indices[] = {
-    0,1,2,
-    0,2,3,
-    0,3,4,
-    2,5,3,
-    4,3,6,
-    6,7,8,
-    8,9,4,
-    7,9,8,
-    7,10,9,
-    10,11,4,
-    11,0,4,
-    10,12,11,
-    12,13,11,
-    11,14,0,
-    11,13,14
+    0,1,2,          //1
+    0,2,3,          //2
+    0,3,4,          //3
+    2,5,3,          //4
+    4,3,6,          //5
+    6,7,8,          //6
+    8,9,4,          //7
+    7,9,8,          //8
+    7,10,9,         //9
+    10,11,4,        //10
+    11,0,4,         //11
+    10,12,11,       //12
+    12,13,11,       //13
+    11,14,0,        //14
+    11,13,14,       //15
+    13,15,16,       //16
+    15,17,16,       //17
+    16,17,14,       //18
+    15,18,17,       //19
+    18,19,14,       //20
+    14,19,0,        //21
+    0,19,1,         //22
+    19,20,1,        //23
 };
 
 void frameBuffer_size_callback(GLFWwindow* Window, int width, int height) {
@@ -116,7 +130,7 @@ int main(void)
     //Wireframe activado
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    int divIndex = 15;
+    int divIndex = 23;
 
     float pielR = 1.000f;
     float pielG = 0.600f;
@@ -143,51 +157,75 @@ int main(void)
         shaderProgram.use();
         glBindVertexArray(VAO);
 
+        //1
         glUniform4f(alternativeColorLocation, pielR, pielG, pielB, 0.9f);
         glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, 0);
-
+        //2
         glUniform4f(alternativeColorLocation, pielR, pielG, pielB, 1.0f);
         glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 3);
-
+        //3
         glUniform4f(alternativeColorLocation, pielR, pielG, pielB, 1.0f);
         glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 6);
-
-        glUniform4f(alternativeColorLocation, orejasR, orejasG, orejasB, 1.0f);
+        //4
+        glUniform4f(alternativeColorLocation, morroR, morroG, morroB, 1.0f);
         glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 9);
-
+        //5
         glUniform4f(alternativeColorLocation, pielR, pielG, pielB, 1.0f);
         glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 12);
-
+        //6
         glUniform4f(alternativeColorLocation, pielR, pielG, pielB, 1.0f);
         glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 15);
-
+        //7
         glUniform4f(alternativeColorLocation, narizOjosR, narizOjosG, narizOjosB, 1.0f);
         glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 18);
-
+        //8
         glUniform4f(alternativeColorLocation, pielR, pielG, pielB, 1.0f);
         glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 21);
-
+        //9
         glUniform4f(alternativeColorLocation, pielR, pielG, pielB, 1.0f);
         glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 24);
-
+        //10
         glUniform4f(alternativeColorLocation, morroR, morroG, morroB, 1.0f);
         glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 27);
-
+        //11
         glUniform4f(alternativeColorLocation, morroR, morroG, morroB, 1.0f);
         glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 30);
-
+        //12
         glUniform4f(alternativeColorLocation, narizOjosR, narizOjosG, narizOjosB, 1.0f);
         glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 33);
-
+        //13
         glUniform4f(alternativeColorLocation, narizOjosR, narizOjosG, narizOjosB, 1.0f);
         glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 36);
-
+        //14
         glUniform4f(alternativeColorLocation, morroR, morroG, morroB, 1.0f);
         glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 39);
-
+        //15
         glUniform4f(alternativeColorLocation, morroR, morroG, morroB, 1.0f);
         glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 42);
-
+        //16
+        glUniform4f(alternativeColorLocation, pielR, pielG, pielB, 1.0f);
+        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 45);
+        //17
+        glUniform4f(alternativeColorLocation, pielR, pielG, pielB, 1.0f);
+        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 48);
+        //18
+        glUniform4f(alternativeColorLocation, narizOjosR, narizOjosG, narizOjosB, 1.0f);
+        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 51);
+        //19
+        glUniform4f(alternativeColorLocation, pielR, pielG, pielB, 1.0f);
+        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 54);
+        //20
+        glUniform4f(alternativeColorLocation, pielR, pielG, pielB, 1.0f);
+        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 57);
+        //21
+        glUniform4f(alternativeColorLocation, pielR, pielG, pielB, 1.0f);
+        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 60);
+        //22
+        glUniform4f(alternativeColorLocation, pielR, pielG, pielB, 1.0f);
+        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 63);
+        //23
+        glUniform4f(alternativeColorLocation, morroR, morroG, morroB, 1.0f);
+        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 66);
 
         glfwSwapBuffers(Window);
         glfwPollEvents();
