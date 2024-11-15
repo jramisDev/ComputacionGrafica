@@ -34,6 +34,8 @@ float vertices[] = {
     -0.09f, -0.18f, 0.00f, //9
     -0.04f, -0.45f, 0.00f, //10
     -0.00f, -0.35f, 0.00f, //11
+    -0.00f, -0.48f, 0.00f, //12
+     0.04f, -0.45f, 0.00f, //13
 };
 
 unsigned int indices[] = {
@@ -47,7 +49,9 @@ unsigned int indices[] = {
     7,9,8,
     7,10,9,
     10,11,4,
-    11,0,4
+    11,0,4,
+    10,12,11,
+    12,13,11
 };
 
 void frameBuffer_size_callback(GLFWwindow* Window, int width, int height) {
@@ -109,7 +113,7 @@ int main(void)
     //Wireframe activado
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    int divIndex = 11;
+    int divIndex = 13;
 
     float pielR = 1.000f;
     float pielG = 0.600f;
@@ -163,14 +167,17 @@ int main(void)
         glUniform4f(alternativeColorLocation, pielR, pielG, pielB, 1.0f);
         glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 24);
 
-        glUniform4f(alternativeColorLocation, 1.f, 10.f, 0.f, 1.0f);
+        glUniform4f(alternativeColorLocation, morroR, morroG, morroB, 1.0f);
         glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 27);
 
-        glUniform4f(alternativeColorLocation, 1.f, 0.f, 1.f, 1.0f);
+        glUniform4f(alternativeColorLocation, morroR, morroG, morroB, 1.0f);
         glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 30);
 
-        glUniform4f(alternativeColorLocation, 1.f, 1.f, 0.f, 1.0f);
+        glUniform4f(alternativeColorLocation, narizOjosR, narizOjosG, narizOjosB, 1.0f);
         glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 33);
+
+        glUniform4f(alternativeColorLocation, narizOjosR, narizOjosG, narizOjosB, 1.0f);
+        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 36);
 
 
         glfwSwapBuffers(Window);
