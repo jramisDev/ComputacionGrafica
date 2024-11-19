@@ -1,25 +1,31 @@
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "Shaders/Shader.h"
 #include "ShadersProgram/ShaderProgram.h"
 
+int alternativeColorLocation;
+
+void InstallShaders(const std::string& vertexCode, const std::string& FragmentCode);
+
+std::string ReadTextFile(const std::string& FileName);
+
 // Código fuente de los shaders
-const char* vertexShaderSource = "#version 330 core\n"
-"layout (location = 0) in vec3 aPos;\n"
-"void main()\n"
-"{\n"
-"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-"}\0";
+const char* vertexShaderSource;
 
-const char* fragmentShaderSource = "#version 330 core\n"
-"out vec4 FragColor;\n"
-"uniform vec4 alternativeColor;\n"
-"void main()\n"
-"{\n"
-"   FragColor = alternativeColor;\n"
-"}\n\0";
+const char* fragmentShaderSource;
 
+void frameBuffer_size_callback(GLFWwindow* Window, int width, int height) {
+    glViewport(0, 0, width, height);
+}
+
+void InstallShaders(const std::string& vertexCode, const std::string& FragmentCode)
+{
+    vertexShaderSource = vertexCode.c_str();
+    fragmentShaderSource = FragmentCode.c_str();
+}
 
 float vertices[] = {
      0.000f,  0.000f, 0.000f, //0
@@ -71,10 +77,6 @@ unsigned int indices[] = {
     19,20,1,        //23
 };
 
-void frameBuffer_size_callback(GLFWwindow* Window, int width, int height) {
-    glViewport(0, 0, width, height);
-}
-
 int main(void)
 {
     glfwInit();
@@ -101,6 +103,8 @@ int main(void)
 
     glfwSetFramebufferSizeCallback(Window, frameBuffer_size_callback);
 
+    InstallShaders(ReadTextFile("vertex.glsl"), ReadTextFile("fragment.glsl"));
+
     Shader vertexShader(vertexShaderSource, GL_VERTEX_SHADER);
     Shader fragmentShader(fragmentShaderSource, GL_FRAGMENT_SHADER);
 
@@ -109,7 +113,7 @@ int main(void)
     shaderProgram.attachShader(fragmentShader);
     shaderProgram.link();
 
-    int alternativeColorLocation = shaderProgram.getUniformLocation("alternativeColor");
+    alternativeColorLocation = shaderProgram.getUniformLocation("alternativeColor");
 
     unsigned int VBO, VAO, IBO;
     glGenVertexArrays(1, &VAO);
@@ -129,7 +133,7 @@ int main(void)
 
     //Wireframe activado
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     int divIndex = 23;
 
     float pielR = 1.000f;
@@ -147,7 +151,6 @@ int main(void)
     float morroR = 0.839f;
     float morroG = 0.506f;
     float morroB = 0.000;
-
 
     while (!glfwWindowShouldClose(Window)) {
         
@@ -237,4 +240,17 @@ int main(void)
 
     glfwTerminate();
     return 0;
+}
+
+std::string ReadTextFile(const std::string& FileName) {
+
+    std::ifstream File(FileName);
+    if (!File.is_open())
+        return "";
+
+    std::stringstream stringbuffer{};
+    stringbuffer << File.rdbuf();
+    File.close();
+
+    return stringbuffer.str();
 }
