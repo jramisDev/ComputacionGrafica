@@ -28,27 +28,28 @@ void InstallShaders(const std::string& vertexCode, const std::string& FragmentCo
 }
 
 float vertices[] = {
-     0.000f,  0.000f, 0.000f, //0
-     0.150f,  0.400f, 0.000f, //1
-    -0.150f,  0.400f, 0.000f, //2
-    -0.500f,  0.280f, 0.000f, //3
-    -0.120f, -0.010f, 0.000f, //4
-    -0.600f,  0.700f, 0.000f, //5
-    -0.600f, -0.060f, 0.000f, //6
-    -0.240f, -0.310f, 0.000f, //7
-    -0.250f, -0.022f, 0.000f, //8
-    -0.090f, -0.150f, 0.000f, //9
-    -0.040f, -0.450f, 0.000f, //10
-    -0.000f, -0.380f, 0.000f, //11
-    -0.000f, -0.470f, 0.000f, //12
-     0.040f, -0.450f, 0.000f, //13
-     0.120f, -0.010f, 0.000f, //14
-     0.240f, -0.310f, 0.000f, //15
-     0.090f, -0.150f, 0.000f, //16
-     0.250f, -0.022f, 0.000f, //17
-     0.600f, -0.060f, 0.000f, //18
-     0.500f,  0.280f, 0.000f, //19
-     0.600f,  0.700f, 0.000f, //20
+    // VERTICE                  COLOR
+     0.000f,  0.000f, 0.000f,   1.f, 0.f, 0.f, //0 
+     0.150f,  0.400f, 0.000f,   1.f, 0.f, 0.f, //1
+    -0.150f,  0.400f, 0.000f,   1.f, 0.f, 0.f, //2
+    -0.500f,  0.280f, 0.000f,   1.f, 0.f, 0.f, //3
+    -0.120f, -0.010f, 0.000f,   1.f, 0.f, 0.f, //4
+    -0.600f,  0.700f, 0.000f,   1.f, 0.f, 0.f, //5
+    -0.600f, -0.060f, 0.000f,   1.f, 0.f, 0.f, //6
+    -0.240f, -0.310f, 0.000f,   1.f, 0.f, 0.f, //7
+    -0.250f, -0.022f, 0.000f,   1.f, 0.f, 0.f, //8
+    -0.090f, -0.150f, 0.000f,   1.f, 0.f, 0.f, //9
+    -0.040f, -0.450f, 0.000f,   1.f, 0.f, 0.f, //10
+    -0.000f, -0.380f, 0.000f,   1.f, 0.f, 0.f, //11
+    -0.000f, -0.470f, 0.000f,   1.f, 0.f, 0.f, //12
+     0.040f, -0.450f, 0.000f,   1.f, 0.f, 0.f, //13
+     0.120f, -0.010f, 0.000f,   1.f, 0.f, 0.f, //14
+     0.240f, -0.310f, 0.000f,   1.f, 0.f, 0.f, //15
+     0.090f, -0.150f, 0.000f,   1.f, 0.f, 0.f, //16
+     0.250f, -0.022f, 0.000f,   1.f, 0.f, 0.f, //17
+     0.600f, -0.060f, 0.000f,   1.f, 0.f, 0.f, //18
+     0.500f,  0.280f, 0.000f,   1.f, 0.f, 0.f, //19
+     0.600f,  0.700f, 0.000f,   1.f, 0.f, 0.f, //20
 };
 
 unsigned int indices[] = {
@@ -123,13 +124,24 @@ int main(void)
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW); 
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    GLsizei stride = 0;
+    void* offset = nullptr;
+    //int* offsetDraw = 0;
+
+    stride = 6 * sizeof(float);
+    offset = (void*)0;
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, offset);
     glEnableVertexAttribArray(0);
+
+    stride = 6 * sizeof(float);
+    offset = (void*)(3 * sizeof(float));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, offset);
+    glEnableVertexAttribArray(1);
 
     //Wireframe activado
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -160,7 +172,7 @@ int main(void)
         glBindVertexArray(VAO);
 
         //1
-        glUniform4f(alternativeColorLocation, pielR, pielG, pielB, 0.9f);
+        glUniform4f(alternativeColorLocation, pielR, pielG, pielB, 1.0f);
         glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, 0);
         //2
         glUniform4f(alternativeColorLocation, pielR, pielG, pielB, 1.0f);
