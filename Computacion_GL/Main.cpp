@@ -133,7 +133,6 @@ int main(void)
 
     //Wireframe activado
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     int divIndex = 23;
 
     float pielR = 1.000f;
@@ -153,7 +152,7 @@ int main(void)
     float morroB = 0.000;
 
     while (!glfwWindowShouldClose(Window)) {
-        
+
         glClear(GL_COLOR_BUFFER_BIT);
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
