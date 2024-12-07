@@ -1,0 +1,2 @@
+C:\Users\Usuario\Downloads\ComputacionGL\x64\Debug\ComputacionGL.exe
+C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\x64\Debug\ComputacionGL.exe

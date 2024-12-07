@@ -3,7 +3,7 @@
 #include <sstream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <stb/stb_image.h>
+#include <STB/stb_image.h>
 #include <string>
 
 class Shader {
@@ -67,13 +67,15 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 }
 
 float vertices[] = {
-     0.0f,  0.5f, 0.0f,  0.5f, 1.0f,  // Vértice superior
+    -0.5f,  0.5f, 0.0f,  0.0f, 1.0f,  // Vértice superior izquierdo
     -0.5f, -0.5f, 0.0f,  0.0f, 0.0f,  // Vértice inferior izquierdo
-     0.5f, -0.5f, 0.0f,  1.0f, 0.0f   // Vértice inferior derecho
+     0.5f, -0.5f, 0.0f,  1.0f, 0.0f,  // Vértice inferior derecho
+     0.5f,  0.5f, 0.0f,  1.0f, 1.0f   // Vértice superior derecho
 };
 
 unsigned int indices[] = {
-    0, 1, 2
+    0, 1, 2,  // Primer triángulo
+    0, 2, 3   // Segundo triángulo
 };
 
 const char* vertexShaderSource = R"glsl(
@@ -121,7 +123,7 @@ int main() {
         std::cerr << "Error al inicializar GLAD" << std::endl;
         return -1;
     }
-
+    
     //Crear shaders y programa
     Shader vertexShader(vertexShaderSource, GL_VERTEX_SHADER);
     Shader fragmentShader(fragmentShaderSource, GL_FRAGMENT_SHADER);
@@ -149,8 +151,8 @@ int main() {
 
     // Cargar textura
     int widthImg, heightImg, PixelNum;
-    //stbi_set_flip_vertically_on_load(true);
-    unsigned char* bytes = stbi_load("ChillBoy.jpg", &widthImg, &heightImg, &PixelNum, 0);
+    stbi_set_flip_vertically_on_load(true);
+    unsigned char* bytes = stbi_load("chill.jpg", &widthImg, &heightImg, &PixelNum, 0);
 
     GLuint texture;
     glGenTextures(1, &texture);
@@ -173,6 +175,7 @@ int main() {
         glBindVertexArray(VAO);
 
         glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
