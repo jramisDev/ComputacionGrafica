@@ -3,265 +3,186 @@
 #include <sstream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "Shaders/Shader.h"
-#include "ShadersProgram/ShaderProgram.h"
+#include <stb/stb_image.h>
+#include <string>
 
-int alternativeColorLocation;
+class Shader {
+public:
+    unsigned int ID;
 
-void InstallShaders(const std::string& vertexCode, const std::string& FragmentCode);
+    Shader(const char* source, GLenum shaderType) {
+        ID = glCreateShader(shaderType);
+        glShaderSource(ID, 1, &source, nullptr);
+        glCompileShader(ID);
 
-std::string ReadTextFile(const std::string& FileName);
+        int success;
+        glGetShaderiv(ID, GL_COMPILE_STATUS, &success);
+        if (!success) {
+            char infoLog[512];
+            glGetShaderInfoLog(ID, 512, nullptr, infoLog);
+            std::cerr << "Error: Shader compilation failed\n" << infoLog << std::endl;
+        }
+    }
 
-// Código fuente de los shaders
-const char* vertexShaderSource;
+    ~Shader() {
+        glDeleteShader(ID);
+    }
+};
 
-const char* fragmentShaderSource;
+class ShaderProgram {
+public:
+    unsigned int ID;
 
-void frameBuffer_size_callback(GLFWwindow* Window, int width, int height) {
+    ShaderProgram() {
+        ID = glCreateProgram();
+    }
+
+    void attachShader(const Shader& shader) {
+        glAttachShader(ID, shader.ID);
+    }
+
+    void link() {
+        glLinkProgram(ID);
+
+        int success;
+        glGetProgramiv(ID, GL_LINK_STATUS, &success);
+        if (!success) {
+            char infoLog[512];
+            glGetProgramInfoLog(ID, 512, nullptr, infoLog);
+            std::cerr << "Error: Program linking failed\n" << infoLog << std::endl;
+        }
+    }
+
+    void use() const {
+        glUseProgram(ID);
+    }
+
+    ~ShaderProgram() {
+        glDeleteProgram(ID);
+    }
+};
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
 }
 
-void InstallShaders(const std::string& vertexCode, const std::string& FragmentCode)
-{
-    vertexShaderSource = vertexCode.c_str();
-    fragmentShaderSource = FragmentCode.c_str();
-}
-
 float vertices[] = {
-    // VERTICE                  COLOR
-     0.000f,  0.000f, 0.000f,   1.f, 0.f, 0.f, //0 
-     0.150f,  0.400f, 0.000f,   1.f, 0.f, 0.f, //1
-    -0.150f,  0.400f, 0.000f,   1.f, 0.f, 0.f, //2
-    -0.500f,  0.280f, 0.000f,   1.f, 0.f, 0.f, //3
-    -0.120f, -0.010f, 0.000f,   1.f, 0.f, 0.f, //4
-    -0.600f,  0.700f, 0.000f,   1.f, 0.f, 0.f, //5
-    -0.600f, -0.060f, 0.000f,   1.f, 0.f, 0.f, //6
-    -0.240f, -0.310f, 0.000f,   1.f, 0.f, 0.f, //7
-    -0.250f, -0.022f, 0.000f,   1.f, 0.f, 0.f, //8
-    -0.090f, -0.150f, 0.000f,   1.f, 0.f, 0.f, //9
-    -0.040f, -0.450f, 0.000f,   1.f, 0.f, 0.f, //10
-    -0.000f, -0.380f, 0.000f,   1.f, 0.f, 0.f, //11
-    -0.000f, -0.470f, 0.000f,   1.f, 0.f, 0.f, //12
-     0.040f, -0.450f, 0.000f,   1.f, 0.f, 0.f, //13
-     0.120f, -0.010f, 0.000f,   1.f, 0.f, 0.f, //14
-     0.240f, -0.310f, 0.000f,   1.f, 0.f, 0.f, //15
-     0.090f, -0.150f, 0.000f,   1.f, 0.f, 0.f, //16
-     0.250f, -0.022f, 0.000f,   1.f, 0.f, 0.f, //17
-     0.600f, -0.060f, 0.000f,   1.f, 0.f, 0.f, //18
-     0.500f,  0.280f, 0.000f,   1.f, 0.f, 0.f, //19
-     0.600f,  0.700f, 0.000f,   1.f, 0.f, 0.f, //20
+     0.0f,  0.5f, 0.0f,  0.5f, 1.0f,  // Vértice superior
+    -0.5f, -0.5f, 0.0f,  0.0f, 0.0f,  // Vértice inferior izquierdo
+     0.5f, -0.5f, 0.0f,  1.0f, 0.0f   // Vértice inferior derecho
 };
 
 unsigned int indices[] = {
-    0,1,2,          //1
-    0,2,3,          //2
-    0,3,4,          //3
-    2,5,3,          //4
-    4,3,6,          //5
-    6,7,8,          //6
-    8,9,4,          //7
-    7,9,8,          //8
-    7,10,9,         //9
-    10,11,4,        //10
-    11,0,4,         //11
-    10,12,11,       //12
-    12,13,11,       //13
-    11,14,0,        //14
-    11,13,14,       //15
-    13,15,16,       //16
-    15,17,16,       //17
-    16,17,14,       //18
-    15,18,17,       //19
-    18,19,14,       //20
-    14,19,0,        //21
-    0,19,1,         //22
-    19,20,1,        //23
+    0, 1, 2
 };
 
-int main(void)
-{
-    glfwInit();
+const char* vertexShaderSource = R"glsl(
+#version 330 core
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec2 aTexCoord;
 
+out vec2 TexCoord;
+
+void main() {
+    gl_Position = vec4(aPos, 1.0);
+    TexCoord = aTexCoord;
+}
+)glsl";
+
+const char* fragmentShaderSource = R"glsl(
+#version 330 core
+out vec4 FragColor;
+in vec2 TexCoord;
+
+uniform sampler2D tex0;
+
+void main() {
+    FragColor = texture(tex0, TexCoord);
+}
+)glsl";
+
+int main() {
+    glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    GLFWwindow* Window = glfwCreateWindow(800, 800, "Computacion Grafica", nullptr, nullptr);
-
-    if (Window == nullptr) {
-        std::cerr << "Failed to create the Window" << std::endl;
+    GLFWwindow* window = glfwCreateWindow(800, 600, "Computacion Grafica", nullptr, nullptr);
+    if (!window) {
+        std::cerr << "Error al crear la ventana" << std::endl;
         glfwTerminate();
         return -1;
     }
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwMakeContextCurrent(window);
 
-    glfwMakeContextCurrent(Window);
-
+    //Inicializar GLAD
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        std::cerr << "Failed to initialize GLAD" << std::endl;
+        std::cerr << "Error al inicializar GLAD" << std::endl;
         return -1;
     }
 
-    glfwSetFramebufferSizeCallback(Window, frameBuffer_size_callback);
-
-    InstallShaders(ReadTextFile("vertex.glsl"), ReadTextFile("fragment.glsl"));
-
+    //Crear shaders y programa
     Shader vertexShader(vertexShaderSource, GL_VERTEX_SHADER);
     Shader fragmentShader(fragmentShaderSource, GL_FRAGMENT_SHADER);
-
     ShaderProgram shaderProgram;
     shaderProgram.attachShader(vertexShader);
     shaderProgram.attachShader(fragmentShader);
     shaderProgram.link();
 
-    alternativeColorLocation = shaderProgram.getUniformLocation("alternativeColor");
-
-    unsigned int VBO, VAO, IBO;
+    //Configuración de buffers
+    unsigned int VAO, VBO, EBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
-    glGenBuffers(1, &IBO);
-
+    glGenBuffers(1, &EBO);
     glBindVertexArray(VAO);
-
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW); 
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    GLsizei stride = 0;
-    void* offset = nullptr;
-    //int* offsetDraw = 0;
-
-    stride = 6 * sizeof(float);
-    offset = (void*)0;
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, offset);
+    //Solo para el triangulo
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-
-    stride = 6 * sizeof(float);
-    offset = (void*)(3 * sizeof(float));
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, offset);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    //Wireframe activado
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    int divIndex = 23;
+    // Cargar textura
+    int widthImg, heightImg, PixelNum;
+    //stbi_set_flip_vertically_on_load(true);
+    unsigned char* bytes = stbi_load("ChillBoy.jpg", &widthImg, &heightImg, &PixelNum, 0);
 
-    float pielR = 1.000f;
-    float pielG = 0.600f;
-    float pielB = 0.000f;
+    GLuint texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, widthImg, heightImg, 0, GL_RGB, GL_UNSIGNED_BYTE, bytes);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    stbi_image_free(bytes);
 
-    float orejasR = 0.969f;
-    float orejasG = 0.686f;
-    float orejasB = 0.259f;
-
-    float narizOjosR = 0.0f;
-    float narizOjosG = 0.0f;
-    float narizOjosB = 0.0f;
-
-    float morroR = 0.839f;
-    float morroG = 0.506f;
-    float morroB = 0.000;
-
-    while (!glfwWindowShouldClose(Window)) {
-
+    // Bucle principal
+    while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT);
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        glClearColor(0.5f, 0.7f, 1.0f, 1.0f);
 
+        glBindTexture(GL_TEXTURE_2D, texture);
         shaderProgram.use();
         glBindVertexArray(VAO);
 
-        //1
-        glUniform4f(alternativeColorLocation, pielR, pielG, pielB, 1.0f);
-        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, 0);
-        //2
-        glUniform4f(alternativeColorLocation, pielR, pielG, pielB, 1.0f);
-        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 3);
-        //3
-        glUniform4f(alternativeColorLocation, pielR, pielG, pielB, 1.0f);
-        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 6);
-        //4
-        glUniform4f(alternativeColorLocation, morroR, morroG, morroB, 1.0f);
-        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 9);
-        //5
-        glUniform4f(alternativeColorLocation, pielR, pielG, pielB, 1.0f);
-        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 12);
-        //6
-        glUniform4f(alternativeColorLocation, pielR, pielG, pielB, 1.0f);
-        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 15);
-        //7
-        glUniform4f(alternativeColorLocation, narizOjosR, narizOjosG, narizOjosB, 1.0f);
-        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 18);
-        //8
-        glUniform4f(alternativeColorLocation, pielR, pielG, pielB, 1.0f);
-        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 21);
-        //9
-        glUniform4f(alternativeColorLocation, pielR, pielG, pielB, 1.0f);
-        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 24);
-        //10
-        glUniform4f(alternativeColorLocation, morroR, morroG, morroB, 1.0f);
-        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 27);
-        //11
-        glUniform4f(alternativeColorLocation, morroR, morroG, morroB, 1.0f);
-        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 30);
-        //12
-        glUniform4f(alternativeColorLocation, narizOjosR, narizOjosG, narizOjosB, 1.0f);
-        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 33);
-        //13
-        glUniform4f(alternativeColorLocation, narizOjosR, narizOjosG, narizOjosB, 1.0f);
-        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 36);
-        //14
-        glUniform4f(alternativeColorLocation, morroR, morroG, morroB, 1.0f);
-        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 39);
-        //15
-        glUniform4f(alternativeColorLocation, morroR, morroG, morroB, 1.0f);
-        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 42);
-        //16
-        glUniform4f(alternativeColorLocation, pielR, pielG, pielB, 1.0f);
-        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 45);
-        //17
-        glUniform4f(alternativeColorLocation, pielR, pielG, pielB, 1.0f);
-        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 48);
-        //18
-        glUniform4f(alternativeColorLocation, narizOjosR, narizOjosG, narizOjosB, 1.0f);
-        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 51);
-        //19
-        glUniform4f(alternativeColorLocation, pielR, pielG, pielB, 1.0f);
-        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 54);
-        //20
-        glUniform4f(alternativeColorLocation, pielR, pielG, pielB, 1.0f);
-        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 57);
-        //21
-        glUniform4f(alternativeColorLocation, pielR, pielG, pielB, 1.0f);
-        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 60);
-        //22
-        glUniform4f(alternativeColorLocation, pielR, pielG, pielB, 1.0f);
-        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 63);
-        //23
-        glUniform4f(alternativeColorLocation, morroR, morroG, morroB, 1.0f);
-        glDrawElements(GL_TRIANGLES, std::size(indices) / divIndex, GL_UNSIGNED_INT, (int*)NULL + 66);
+        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 
-        glfwSwapBuffers(Window);
+        glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
+    // Limpieza
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &IBO);
-
+    glDeleteBuffers(1, &EBO);
+    shaderProgram.~ShaderProgram();
     glfwTerminate();
     return 0;
-}
-
-std::string ReadTextFile(const std::string& FileName) {
-
-    std::ifstream File(FileName);
-    if (!File.is_open())
-        return "";
-
-    std::stringstream stringbuffer{};
-    stringbuffer << File.rdbuf();
-    File.close();
-
-    return stringbuffer.str();
 }

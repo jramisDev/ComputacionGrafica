@@ -1,25 +1,16 @@
-﻿  Main.cpp
-C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Main.cpp(175,57): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Main.cpp(178,57): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Main.cpp(181,57): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Main.cpp(184,57): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Main.cpp(187,57): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Main.cpp(190,57): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Main.cpp(193,57): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Main.cpp(196,57): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Main.cpp(199,57): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Main.cpp(202,57): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Main.cpp(205,57): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Main.cpp(208,57): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Main.cpp(211,57): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Main.cpp(214,57): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Main.cpp(217,57): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Main.cpp(220,57): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Main.cpp(223,57): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Main.cpp(226,57): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Main.cpp(229,57): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Main.cpp(232,57): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Main.cpp(235,57): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Main.cpp(238,57): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Main.cpp(241,57): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-  Computacion_GL.vcxproj -> C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\x64\Debug\Computacion_GL.exe
+﻿  glad.c
+  Main.cpp
+  ShaderProgram.cpp
+  Shader.cpp
+  stb.cpp
+  Generating Code...
+ShaderProgram.obj : error LNK2005: "public: __cdecl ShaderProgram::ShaderProgram(void)" (??0ShaderProgram@@QEAA@XZ) already defined in Main.obj
+ShaderProgram.obj : error LNK2005: "public: __cdecl ShaderProgram::~ShaderProgram(void)" (??1ShaderProgram@@QEAA@XZ) already defined in Main.obj
+ShaderProgram.obj : error LNK2005: "public: void __cdecl ShaderProgram::attachShader(class Shader const &)" (?attachShader@ShaderProgram@@QEAAXAEBVShader@@@Z) already defined in Main.obj
+ShaderProgram.obj : error LNK2005: "public: void __cdecl ShaderProgram::link(void)" (?link@ShaderProgram@@QEAAXXZ) already defined in Main.obj
+ShaderProgram.obj : error LNK2005: "public: void __cdecl ShaderProgram::use(void)const " (?use@ShaderProgram@@QEBAXXZ) already defined in Main.obj
+Shader.obj : error LNK2005: "public: __cdecl Shader::~Shader(void)" (??1Shader@@QEAA@XZ) already defined in Main.obj
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+Main.obj : error LNK2019: unresolved external symbol stbi_load referenced in function main
+Main.obj : error LNK2019: unresolved external symbol stbi_image_free referenced in function main
+C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\x64\Debug\Computacion_GL.exe : fatal error LNK1120: 2 unresolved externals
