@@ -9,6 +9,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+const unsigned int width = 800;
+const unsigned int height = 600;
+
 class Shader {
 public:
     unsigned int ID;
@@ -70,26 +73,36 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 }
 
 float vertices[] = {
-    -0.5f,  0.5f, 0.0f,  0.0f, 1.0f,  // Vértice superior izquierdo
-    -0.5f, -0.5f, 0.0f,  0.0f, 0.0f,  // Vértice inferior izquierdo
-     0.5f, -0.5f, 0.0f,  1.0f, 0.0f,  // Vértice inferior derecho
-     0.5f,  0.5f, 0.0f,  1.0f, 1.0f   // Vértice superior derecho
+    -0.5f, 0.0f,  0.5f,   0.0f, 0.0f,
+     0.5f, 0.0f,  0.5f,   1.0f, 0.0f,
+     0.5f, 0.0f, -0.5f,   1.0f, 1.0f,
+    -0.5f, 0.0f, -0.5f,   0.0f, 1.0f,
+     0.0f, 0.8f,  0.0f,   0.5f, 0.5f
 };
 
 unsigned int indices[] = {
-    0, 1, 2,  // Primer triángulo
-    0, 2, 3   // Segundo triángulo
+    0, 1, 2,
+    0, 2, 3,
+    0, 1, 4,
+    1, 2, 4,
+    2, 3, 4,
+    3, 0, 4
 };
 
 const char* vertexShaderSource = R"glsl(
 #version 330 core
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec2 aTexCoord;
-
+layout (location = 2) in vec3 aColor;
 out vec2 TexCoord;
+out vec3 ourColor;
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
 
 void main() {
-    gl_Position = vec4(aPos, 1.0);
+    gl_Position = projection * view * model * vec4(aPos, 1.0);
+    ourColor = aColor;
     TexCoord = aTexCoord;
 }
 )glsl";
@@ -98,7 +111,7 @@ const char* fragmentShaderSource = R"glsl(
 #version 330 core
 out vec4 FragColor;
 in vec2 TexCoord;
-
+in vec3 ourColor;
 uniform sampler2D tex0;
 
 void main() {
@@ -112,7 +125,7 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    GLFWwindow* window = glfwCreateWindow(800, 600, "Computacion Grafica", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(width, height, "Computacion Grafica", nullptr, nullptr);
     if (!window) {
         std::cerr << "Error al crear la ventana" << std::endl;
         glfwTerminate();
@@ -168,17 +181,41 @@ int main() {
     glGenerateMipmap(GL_TEXTURE_2D);
     stbi_image_free(bytes);
 
+    glEnable(GL_DEPTH_TEST);
+
     // Bucle principal
     while (!glfwWindowShouldClose(window)) {
-        glClear(GL_COLOR_BUFFER_BIT);
+
         glClearColor(0.5f, 0.7f, 1.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        //shaderProgram.use();
+
+        glm::mat4 model = glm::mat4(1.f);
+        glm::mat4 view = glm::mat4(1.f);
+        glm::mat4 projection = glm::mat4(1.f);
+
+        //CAMBIAR ROTACION A DELTA TIME !!
+        model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        view = glm::translate(view, glm::vec3(0.0f, -0.1f, -2.0f));
+
+        //CONFIGURACION DE LA CAMARA
+        projection = glm::perspective(glm::radians(45.0f), (float)(width/height), 0.1f, 100.f);
+
+        GLuint modelUniform = glGetUniformLocation(shaderProgram.ID, "model");
+        glUniformMatrix4fv(modelUniform, 1, GL_FALSE, glm::value_ptr(model));
+
+        GLuint viewUniform = glGetUniformLocation(shaderProgram.ID, "view");
+        glUniformMatrix4fv(modelUniform, 1, GL_FALSE, glm::value_ptr(view));
+
+        GLuint projectionUniform = glGetUniformLocation(shaderProgram.ID, "projection");
+        glUniformMatrix4fv(modelUniform, 1, GL_FALSE, glm::value_ptr(projection));
+
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture);
-        shaderProgram.use();
-        glBindVertexArray(VAO);
 
-        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glBindVertexArray(VAO);
+        glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(int), GL_UNSIGNED_INT, 0);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
