@@ -21,13 +21,12 @@ public:
 	int height;
 
 	//float sensitivity;
+	float speed = 0.1f;
 
 	Camera(int InWidth, int InHeight, glm::vec3 InPosition);
 
 	void CameraMatrix(float InFOV, float InNearPlane, float InFarPlane, unsigned int InShaderID, const char* InUniform);
 
 	void CameraInputs(GLFWwindow* InWindow);
-
-
 };
 

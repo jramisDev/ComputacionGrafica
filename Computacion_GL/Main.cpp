@@ -36,12 +36,10 @@ const char* vertexShaderSource = "#version 330 core\n"
 "layout (location = 2) in vec2 aTex;\n"
 "out vec3 ourColor;\n"
 "out vec2 texCoord;\n"
-"uniform mat4 model;\n"
-"uniform mat4 view;\n"
-"uniform mat4 projection;\n"
+"uniform mat4 CameraMatrix;\n"
 "void main()\n"
 "{\n"
-"    gl_Position = projection * view * model * vec4(aPos, 1.0);\n"
+"    gl_Position = CameraMatrix * vec4(aPos, 1.0);\n"
 "    ourColor = aColor;\n"
 "    texCoord = aTex;\n"
 "}\0";
@@ -137,8 +135,6 @@ int main(void) {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
-    //TEXTURAS AQUI
-
     int widhtImg, heightImg, PixelNum;
 
     stbi_set_flip_vertically_on_load(true);
@@ -168,6 +164,8 @@ int main(void) {
 
     glEnable(GL_DEPTH_TEST);
 
+    Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
+
     // Bucle principal
     while (!glfwWindowShouldClose(window)) {
 
@@ -180,26 +178,8 @@ int main(void) {
 
         glUseProgram(shaderProgram);
 
-        glm::mat4 model      = glm::mat4(1.0f);
-        glm::mat4 view       = glm::mat4(1.0f);
-        glm::mat4 projection = glm::mat4(1.0f);
-
-        //CAMBIAR ROTACION A DELTA TIME!!!
-        model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        view = glm::translate(view, glm::vec3(0.0f, -0.5f, -2.0f));
-
-        //CONFIGURACION DE LA CAMARA
-        projection = glm::perspective(glm::radians(45.0f), (float)(width / height), 0.1f, 100.0f);
-
-        GLuint modelUniform = glGetUniformLocation(shaderProgram, "model");
-        glUniformMatrix4fv(modelUniform, 1, GL_FALSE, glm::value_ptr(model));
-
-        GLuint viewUniform = glGetUniformLocation(shaderProgram, "view");
-        glUniformMatrix4fv(viewUniform, 1, GL_FALSE, glm::value_ptr(view));
-
-        GLuint projectionUniform = glGetUniformLocation(shaderProgram, "projection");
-        glUniformMatrix4fv(projectionUniform, 1, GL_FALSE, glm::value_ptr(projection));
-        
+        camera.CameraMatrix(45.0f, 0.1f, 100.0f, shaderProgram, "CameraMatrix");
+        camera.CameraInputs(window);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture);
