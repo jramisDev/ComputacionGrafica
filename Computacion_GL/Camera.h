@@ -23,6 +23,10 @@ public:
 	//float sensitivity;
 	float speed = 0.1f;
 
+	bool rightMouseButtonHeld = false;
+	double lastMouseX, lastMouseY;
+	float mouseSensitivity = 0.5f;
+
 	Camera(int InWidth, int InHeight, glm::vec3 InPosition);
 
 	void CameraMatrix(float InFOV, float InNearPlane, float InFarPlane, unsigned int InShaderID, const char* InUniform);

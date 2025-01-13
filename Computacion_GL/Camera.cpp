@@ -18,8 +18,6 @@ void Camera::CameraMatrix(float InFOV, float InNearPlane, float InFarPlane, unsi
 
 	GLuint CameraUniform = glGetUniformLocation(InShaderID, InUniform);
 	glUniformMatrix4fv(CameraUniform, 1, GL_FALSE, glm::value_ptr(projection * view));
-
-
 }
 
 void Camera::CameraInputs(GLFWwindow* InWindow)
@@ -49,5 +47,30 @@ void Camera::CameraInputs(GLFWwindow* InWindow)
 	}
 	if (glfwGetKey(InWindow, GLFW_KEY_LEFT_SHIFT)) {
 		speed = 1.0f;
+	}
+
+	if (glfwGetMouseButton(InWindow, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
+		if (!rightMouseButtonHeld) {
+			rightMouseButtonHeld = true;
+
+			glfwGetCursorPos(InWindow, &lastMouseX, &lastMouseY);
+		}
+		else {
+			double currentMouseX, currentMouseY;
+			glfwGetCursorPos(InWindow, &currentMouseX, &currentMouseY);
+
+			double deltaX = currentMouseX - lastMouseX;
+			double deltaY = currentMouseY - lastMouseY;
+
+			Orientation = glm::rotate(Orientation, -glm::radians((float)deltaX * mouseSensitivity), Up);
+			glm::vec3 right = glm::normalize(glm::cross(Orientation, Up));
+			Orientation = glm::rotate(Orientation, -glm::radians((float)deltaY * mouseSensitivity), right);
+
+			lastMouseX = currentMouseX;
+			lastMouseY = currentMouseY;
+		}
+	}
+	else {
+		rightMouseButtonHeld = false;
 	}
 }
