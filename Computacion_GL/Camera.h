@@ -23,8 +23,8 @@ public:
 	//float sensitivity;
 	float speed = 0.1f;
 
-	bool rightMouseButtonHeld = false;
-	double lastMouseX, lastMouseY;
+	bool rightButtonHold = false;
+	double lastPosMouseX, lastPosMouseY;
 	float mouseSensitivity = 0.5f;
 
 	Camera(int InWidth, int InHeight, glm::vec3 InPosition);
