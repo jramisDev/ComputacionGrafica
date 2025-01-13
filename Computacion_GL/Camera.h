@@ -25,7 +25,7 @@ public:
 
 	bool rightButtonHold = false;
 	double lastPosMouseX, lastPosMouseY;
-	float mouseSensitivity = 0.5f;
+	float mouseSensitivity = 0.1f;
 
 	Camera(int InWidth, int InHeight, glm::vec3 InPosition);
 

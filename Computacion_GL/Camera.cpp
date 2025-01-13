@@ -50,24 +50,18 @@ void Camera::CameraInputs(GLFWwindow* InWindow)
 	}
 
 	if (glfwGetMouseButton(InWindow, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
-		if (!rightButtonHold) {
-			rightButtonHold = true;
-			glfwGetCursorPos(InWindow, &lastPosMouseX, &lastPosMouseY);
-		} else {
-			double currentPosMouseX, currentPosMouseY;
-			glfwGetCursorPos(InWindow, &currentPosMouseX, &currentPosMouseY);
+		double currentPosMouseX, currentPosMouseY;
+		glfwGetCursorPos(InWindow, &currentPosMouseX, &currentPosMouseY);
 
-			double deltaX = currentPosMouseX - lastPosMouseX;
-			double deltaY = currentPosMouseY - lastPosMouseY;
+		Orientation = glm::rotate(Orientation, -glm::radians((float)(currentPosMouseX - lastPosMouseX)*mouseSensitivity), Up);
+		glm::vec3 right = glm::normalize(glm::cross(Orientation, Up));
+		Orientation = glm::rotate(Orientation, -glm::radians((float)(currentPosMouseY - lastPosMouseY)*mouseSensitivity), right);
 
-			Orientation = glm::rotate(Orientation, -glm::radians((float)deltaX * mouseSensitivity), Up);
-			glm::vec3 right = glm::normalize(glm::cross(Orientation, Up));
-			Orientation = glm::rotate(Orientation, -glm::radians((float)deltaY * mouseSensitivity), right);
+		lastPosMouseX = currentPosMouseX;
+		lastPosMouseY = currentPosMouseY;
+	}
 
-			lastPosMouseX = currentPosMouseX;
-			lastPosMouseY = currentPosMouseY;
-		}
-	} else {
-		rightButtonHold = false;
+	if (glfwGetMouseButton(InWindow, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE) {
+		glfwGetCursorPos(InWindow, &lastPosMouseX, &lastPosMouseY);
 	}
 }
