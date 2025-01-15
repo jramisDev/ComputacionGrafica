@@ -9,93 +9,48 @@
 #include "Shader.h"
 #include "ShaderProgram.h"
 #include "Camera.h"
+#include "Mesh.h"  
 
-// Clase Shader
-//class Shader {
-//public:
-//    GLuint ID;
-//    Shader(const std::string& source, GLenum shaderType) {
-//        ID = glCreateShader(shaderType);
-//        const char* src = source.c_str();
-//        glShaderSource(ID, 1, &src, nullptr);
-//        glCompileShader(ID);
-//
-//        GLint success;
-//        glGetShaderiv(ID, GL_COMPILE_STATUS, &success);
-//        if (!success) {
-//            char infoLog[512];
-//            glGetShaderInfoLog(ID, 512, nullptr, infoLog);
-//            std::cerr << "Error al compilar el shader: " << infoLog << std::endl;
-//        }
-//    }
-//
-//    ~Shader() {
-//        glDeleteShader(ID);
-//    }
-//};
-//
-//// Clase ShaderProgram
-//class ShaderProgram {
-//public:
-//    GLuint ID;
-//
-//    ShaderProgram() {
-//        ID = glCreateProgram();
-//    }
-//
-//    void attachShader(const Shader& shader) {
-//        glAttachShader(ID, shader.ID);
-//    }
-//
-//    void linkProgram() {
-//        glLinkProgram(ID);
-//
-//        GLint success;
-//        glGetProgramiv(ID, GL_LINK_STATUS, &success);
-//        if (!success) {
-//            char infoLog[512];
-//            glGetProgramInfoLog(ID, 512, nullptr, infoLog);
-//            std::cerr << "Error al vincular el programa: " << infoLog << std::endl;
-//        }
-//    }
-//
-//    void use() const {
-//        glUseProgram(ID);
-//    }
-//
-//    GLuint getUniformLocation(const std::string& name) const {
-//        return glGetUniformLocation(ID, name.c_str());
-//    }
-//
-//    void setInt(const std::string& name, int value) const {
-//        glUniform1i(getUniformLocation(name), value);
-//    }
-//
-//    void setMat4(const std::string& name, const glm::mat4& matrix) const {
-//        glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(matrix));
-//    }
-//
-//    ~ShaderProgram() {
-//        glDeleteProgram(ID);
-//    }
-//};
 
-// Datos para el modelo
-float vertices[] = {
-    -0.5f,  0.0f,  0.5f,     0.5f, 0.0f, 0.5f,   0.0f, 0.0f,
-    -0.5f,  0.0f, -0.5f,     0.0f, 1.0f, 0.0f,   1.0f, 0.0f,
-     0.5f,  0.0f, -0.5f,     0.0f, 0.5f, 0.5f,   0.0f, 0.0f,
-     0.5f,  0.0f,  0.5f,     1.0f, 0.0f, 0.0f,   1.0f, 0.0f,
-     0.0f,  0.8f,  0.0f,     0.0f, 0.5f, 0.5f,   0.5f, 1.0f,
+std::vector<float> pyramidVertices = {
+   -0.5f,  0.0f,  0.5f,     0.5f, 0.0f, 0.5f,   0.0f, 0.0f,
+   -0.5f,  0.0f, -0.5f,     0.0f, 1.0f, 0.0f,   1.0f, 0.0f,
+    0.5f,  0.0f, -0.5f,     0.0f, 0.5f, 0.5f,   0.0f, 0.0f,
+    0.5f,  0.0f,  0.5f,     1.0f, 0.0f, 0.0f,   1.0f, 0.0f,
+    0.0f,  0.8f,  0.0f,     0.0f, 0.5f, 0.5f,   0.5f, 1.0f,
+
 };
 
-unsigned int indices[] = {
+std::vector<unsigned int> pyramidIndices = {
     0, 1, 2,
     0, 2, 3,
     0, 1, 4,
     1, 2, 4,
     2, 3, 4,
     3, 0, 4
+};
+
+std::vector<float> cubeVertices = {
+
+    -0.5f, -0.5f,  0.5f,   1.0f, 0.0f, 0.0f,   0.0f, 0.0f,
+     0.5f, -0.5f,  0.5f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 1.0f,   1.0f, 1.0f,
+    -0.5f,  0.5f,  0.5f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f,
+    
+    -0.5f, -0.5f, -0.5f,   1.0f, 0.0f, 0.0f,   0.0f, 0.0f,
+     0.5f, -0.5f, -0.5f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,
+     0.5f,  0.5f, -0.5f,   0.0f, 0.0f, 1.0f,   1.0f, 1.0f,
+    -0.5f,  0.5f, -0.5f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f,
+
+};
+
+std::vector<unsigned int> cubeIndices = {
+    0, 1, 2,  2, 3, 0,
+    4, 5, 6,  6, 7, 4,
+    0, 3, 7,  7, 4, 0,
+    1, 2, 6,  6, 5, 1,
+    3, 2, 6,  6, 7, 3,
+    0, 1, 5,  5, 4, 0 
 };
 
 // Dimensiones de la ventana
@@ -108,11 +63,15 @@ const char* vertexShaderSource = R"(
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aColor; 
 layout (location = 2) in vec2 aTex;
+
 out vec3 ourColor;
 out vec2 texCoord;
+
 uniform mat4 CameraMatrix;
+uniform mat4 ModelMatrix;
+
 void main() {
-    gl_Position = CameraMatrix * vec4(aPos, 1.0);
+    gl_Position = CameraMatrix * ModelMatrix * vec4(aPos, 1.0);
     ourColor = aColor;
     texCoord = aTex;
 }
@@ -168,35 +127,12 @@ int main(void) {
     shaderProgram.attachShader(fragmentShader);
     shaderProgram.linkProgram();
 
-    unsigned int VBO, VAO, IBO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &IBO);
+    // Crear malla para el cubo
+    Mesh cubeMesh(cubeVertices, cubeIndices);
+    Mesh pyramidMesh(pyramidVertices, pyramidIndices);
 
-    glBindVertexArray(VAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    unsigned int stride = 8 * sizeof(float);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*)0);
-    glEnableVertexAttribArray(0);
-
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, (void*)(6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-
+    // Cargar textura
     int widhtImg, heightImg, PixelNum;
-
     stbi_set_flip_vertically_on_load(true);
     unsigned char* bytes = stbi_load("chill.jpg", &widhtImg, &heightImg, &PixelNum, 0);
 
@@ -214,18 +150,15 @@ int main(void) {
     else {
         std::cout << "Failed to load texture" << std::endl;
     }
-
     stbi_image_free(bytes);
-    glBindTexture(GL_TEXTURE_2D, 0);
 
-    shaderProgram.use();
-
-    glEnable(GL_DEPTH_TEST);
-
+    // Configurar cámara
     Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
 
+    // Bucle de renderizado
     while (!glfwWindowShouldClose(window)) {
         processInput(window);
+
         glClearColor(0.5f, 0.7f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -233,19 +166,14 @@ int main(void) {
         camera.CameraMatrix(45.0f, 0.1f, 100.0f, shaderProgram.getID(), "CameraMatrix");
         camera.CameraInputs(window);
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture);
-
-        glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(int), GL_UNSIGNED_INT, 0);
+        // Dibujar el cubo
+        cubeMesh.Draw(shaderProgram.getID(), glm::vec3(0.0f));
+        pyramidMesh.Draw(shaderProgram.getID(), glm::vec3(2.0f, 1.0f, 0.0f));
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &IBO);
     glfwTerminate();
     return 0;
 }
