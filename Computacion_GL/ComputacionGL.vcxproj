@@ -140,6 +140,8 @@
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="STB.cpp" />
+    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Texture.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />

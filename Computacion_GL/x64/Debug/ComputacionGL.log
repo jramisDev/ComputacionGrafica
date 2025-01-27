@@ -1,3 +1,2 @@
-﻿  Mesh.cpp
-C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Mesh.cpp(55,34): warning C4244: 'argument': conversion from 'const unsigned __int64' to 'GLsizei', possible loss of data
+﻿  main.cpp
   ComputacionGL.vcxproj -> C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\x64\Debug\ComputacionGL.exe

@@ -9,7 +9,8 @@
 #include "Shader.h"
 #include "ShaderProgram.h"
 #include "Camera.h"
-#include "Mesh.h"  
+#include "Mesh.h"
+#include "Texture.h"
 
 
 std::vector<float> pyramidVertices = {
@@ -128,29 +129,9 @@ int main(void) {
     shaderProgram.linkProgram();
 
     // Crear malla para el cubo
-    Mesh cubeMesh(cubeVertices, cubeIndices);
-    Mesh pyramidMesh(pyramidVertices, pyramidIndices);
+    Mesh cubeMesh(cubeVertices, cubeIndices, "chill.jpg");
+    Mesh pyramidMesh(pyramidVertices, pyramidIndices, "chillInverseColor.jpg");
 
-    // Cargar textura
-    int widhtImg, heightImg, PixelNum;
-    stbi_set_flip_vertically_on_load(true);
-    unsigned char* bytes = stbi_load("chill.jpg", &widhtImg, &heightImg, &PixelNum, 0);
-
-    GLuint texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-    if (bytes) {
-        GLenum format = (PixelNum == 4) ? GL_RGBA : GL_RGB;
-        glTexImage2D(GL_TEXTURE_2D, 0, format, widhtImg, heightImg, 0, format, GL_UNSIGNED_BYTE, bytes);
-    }
-    else {
-        std::cout << "Failed to load texture" << std::endl;
-    }
-    stbi_image_free(bytes);
 
     // Configurar cámara
     Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));

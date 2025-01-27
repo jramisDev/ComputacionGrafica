@@ -4,10 +4,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-Mesh::Mesh(std::vector<float> vertices, std::vector<unsigned int> indices) {
+Mesh::Mesh(std::vector<float> vertices, std::vector<unsigned int> indices, const std::string& texturePath)
+    : texture(texturePath)  // Inicializa la textura con la ruta proporcionada
+{
     SetupMesh(vertices, indices);
-
-    sizeIndices = sizeof(indices);
+    sizeIndices = indices.size();
 }
 
 Mesh::~Mesh() {
@@ -33,7 +34,7 @@ void Mesh::SetupMesh(std::vector<float> vertices, std::vector<unsigned int> indi
 
     // Configurar los atributos de los vértices
     unsigned int stride = 8 * sizeof(float);  // 3 (posición) + 3 (color) + 2 (textura)
-    
+
     // Posición
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*)0);
     glEnableVertexAttribArray(0);
@@ -51,11 +52,15 @@ void Mesh::SetupMesh(std::vector<float> vertices, std::vector<unsigned int> indi
 }
 
 void Mesh::Draw(unsigned int InShaderID, const glm::vec3 Offset) const {
-    glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, sizeIndices, GL_UNSIGNED_INT, 0);  // 36 porque un cubo tiene 12 triángulos
-    glBindVertexArray(0);
+    // Activar y vincular la textura antes de dibujar
+    texture.Bind();
 
-    glm::mat4 model = glm::translate(glm::mat4(1.0f), Offset);  // Desplazado a la derecha
+    // Pasar la matriz de transformación al shader
+    glm::mat4 model = glm::translate(glm::mat4(1.0f), Offset);
     GLuint modelLoc = glGetUniformLocation(InShaderID, "ModelMatrix");
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+    glBindVertexArray(VAO);
+    glDrawElements(GL_TRIANGLES, sizeIndices, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
 }
