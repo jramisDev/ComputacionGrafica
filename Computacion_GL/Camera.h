@@ -8,7 +8,6 @@
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtx/vector_angle.hpp>
 
-
 class Camera
 {
 public:
@@ -17,20 +16,19 @@ public:
 	glm::vec3 Orientation = glm::vec3(0.0f, 0.0f, -1.0f);
 	glm::vec3 Up = glm::vec3(0.0f, 1.0f, 0.0f);
 
-	int width;
-	int height;
+	bool rightMouseButtonHeld = false;
+	double lastMouseX, lastMouseY;
+	float mouseSensitivity = 0.5f;
 
-	//float sensitivity;
-	float speed = 0.1f;
+	int Width;
+	int Height;
 
-	bool rightButtonHold = false;
-	double lastPosMouseX, lastPosMouseY;
-	float mouseSensitivity = 0.1f;
+	float speed = 0.3f;
 
-	Camera(int InWidth, int InHeight, glm::vec3 InPosition);
+	Camera(int width, int height, glm::vec3 position);
 
-	void CameraMatrix(float InFOV, float InNearPlane, float InFarPlane, unsigned int InShaderID, const char* InUniform);
+	glm::mat4 CameraMatrix(float FOV, float nearPlane, float farPlane, unsigned int ShaderProgram, const char* uniform);
 
-	void CameraInputs(GLFWwindow* InWindow);
+	void CameraInputs(GLFWwindow* window);
 };
 
