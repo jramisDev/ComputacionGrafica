@@ -18,12 +18,12 @@ public:
 
 	bool rightMouseButtonHeld = false;
 	double lastMouseX, lastMouseY;
-	float mouseSensitivity = 0.5f;
+	float mouseSensitivity = 0.3f;
 
 	int Width;
 	int Height;
 
-	float speed = 0.3f;
+	float speed = 0.1f;
 
 	Camera(int width, int height, glm::vec3 position);
 

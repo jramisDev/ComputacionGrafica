@@ -29,8 +29,8 @@ public:
     void draw(ShaderProgram& shaderProgram) {
         int modelLoc = glGetUniformLocation(shaderProgram.ID, "ModelMatrix");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(modelMatrix));
-        texture.bind();
-        mesh.bind();
+        texture.Bind();
+        mesh.Bind();
         glDrawElements(GL_TRIANGLES, mesh.indexCount, GL_UNSIGNED_INT, 0);
     }
 };

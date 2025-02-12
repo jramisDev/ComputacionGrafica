@@ -1,1 +1,10 @@
-﻿  ComputacionGL.vcxproj -> C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\x64\Debug\ComputacionGL.exe
+﻿  Mesh.cpp
+  Object.cpp
+  Shader.cpp
+  ShaderProgram.cpp
+  Texture.cpp
+  main.cpp
+C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\Object.h(34,42): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+  Generating Code...
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+  ComputacionGL.vcxproj -> C:\Proyectos\UT-HUB\Tercero\ComputacionGrafica\ComputacionGrafica\Computacion_GL\x64\Debug\ComputacionGL.exe
