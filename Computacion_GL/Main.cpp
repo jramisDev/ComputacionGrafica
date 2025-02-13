@@ -9,7 +9,7 @@
 #include "Camera.h"
 #include "Shader.h"
 #include "ShaderProgram.h"
-#include "Object.h"
+#include "Mesh.h"
 
 float verticesSuelo[] = {
      -5.0f, 0.0f, -5.0f,     0.0f, 0.0f,       0.0f, 1.0f, 0.0f,
@@ -178,17 +178,17 @@ int main() {
 
     glEnable(GL_DEPTH_TEST);
 
-    Object objeto1(verticesSuelo, sizeof(verticesSuelo), indicesSuelo, sizeof(indicesSuelo), "chill.jpg");
-    Object objeto2(verticesCubo, sizeof(verticesCubo), indicesCubo, sizeof(indicesCubo), "chill.jpg");
-    Object objeto3(verticesCubo, sizeof(verticesCubo), indicesCubo, sizeof(indicesCubo), "chill.jpg");
-    Object objeto4(verticesCubo, sizeof(verticesCubo), indicesCubo, sizeof(indicesCubo), "chill.jpg");
+    Mesh mesh1(verticesSuelo, sizeof(verticesSuelo), indicesSuelo, sizeof(indicesSuelo), "chill.jpg");
+    Mesh mesh2(verticesCubo, sizeof(verticesCubo), indicesCubo, sizeof(indicesCubo), "chill.jpg");
+    Mesh mesh3(verticesCubo, sizeof(verticesCubo), indicesCubo, sizeof(indicesCubo), "chill.jpg");
+    Mesh mesh4(verticesCubo, sizeof(verticesCubo), indicesCubo, sizeof(indicesCubo), "chill.jpg");
 
-    objeto1.setModelMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
-    objeto2.setModelMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(2.0f, 2.0f, 2.0f)));
-    objeto3.setModelMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
-    objeto4.setModelMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(-2.0f, 2.0f, -2.0f)));
+    mesh1.setModelMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+    mesh2.setModelMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(2.0f, 2.0f, 2.0f)));
+    mesh3.setModelMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
+    mesh4.setModelMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(-2.0f, 2.0f, -2.0f)));
 
-    Camera camera(width, height, glm::vec3(0.0f, 1.0f, 4.0f));
+    Camera camera(width, height, glm::vec3(0.0f, 2.0f, 6.0f));
 
     float constant = 1.0f;
     float linear = 0.05f;
@@ -202,8 +202,8 @@ int main() {
         camera.CameraInputs(window);
 
         shaderProgram.SetVec3("viewPos", camera.Position);
-        shaderProgram.SetVec3("lightPos", objeto2.getPosition());  
-        shaderProgram.SetVec3("lightPos2", objeto4.getPosition());  
+        shaderProgram.SetVec3("lightPos", mesh2.getPosition());
+        shaderProgram.SetVec3("lightPos2", mesh4.getPosition());
         shaderProgram.SetVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f)); 
         shaderProgram.SetVec3("lightColor2", glm::vec3(1.0f, 0.0f, 0.0f));
 
@@ -216,10 +216,10 @@ int main() {
 
         camera.CameraMatrix(45.0f, 0.1f, 100.f, shaderProgram.ID, "CameraMatrix");
 
-        objeto1.draw(shaderProgram);
-        objeto2.draw(shaderProgram);
-        objeto3.draw(shaderProgram);
-        objeto4.draw(shaderProgram);
+        mesh1.draw(shaderProgram);
+        mesh2.draw(shaderProgram);
+        mesh3.draw(shaderProgram);
+        mesh4.draw(shaderProgram);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

@@ -137,7 +137,6 @@
     <ClCompile Include="glad.c" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="Object.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="STB.cpp" />
@@ -150,7 +149,6 @@
     <ClInclude Include="Dependencies\include\GLFW\glfw3native.h" />
     <ClInclude Include="Dependencies\include\KHR\khrplatform.h" />
     <ClInclude Include="Mesh.h" />
-    <ClInclude Include="Object.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="Texture.h" />
